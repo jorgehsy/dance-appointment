@@ -13,7 +13,7 @@
                               <span class="time"> {{ getTimeFormat(appointment.dancetime) }} </span></p>
                          </v-card-text>
                     </v-card>
-                    <div v-if="!appointments.lenght">
+                    <div v-if="appointments.length == 0">
                          <h1>Want a dance with the Death?</h1>
                          <v-spacer></v-spacer>
                          <v-btn p3 color="primary" @click="$router.replace('create')">Make an Appointment</v-btn>

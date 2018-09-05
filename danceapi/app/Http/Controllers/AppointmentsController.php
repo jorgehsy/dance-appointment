@@ -24,13 +24,13 @@ class AppointmentsController extends Controller
     {
         //validate requires and format
         $this->validate($request, [
-            'email' => 'required|email|unique:appointments',
+            'email' => 'required|email',
             'dancedate' => 'required|date',
         ]);
         
         //validate date after current time
-        if ($request->dancedate . $request->dancetime < date("Y-m-dH:i:s")){
-            return response()->json(['statusText' => "we cannot travel to the pass... right?"], 204);
+        if (($request->dancedate . $request->dancetime) < date("Y-m-dH:i:s")){
+            return response()->json(['status' => 10, 'message' => "Pick another date, we cannot travel to the pass... yet"], 400);
         }
 
         //validate if dates collapse
@@ -42,12 +42,12 @@ class AppointmentsController extends Controller
             $endTimeReq = date('H:i:s',strtotime('+1 hour',strtotime($request->dancetime)));
             $endTimeTkn = date('H:i:s',strtotime('+1 hour',strtotime($dateTaken->dancetime)));
             if($endTimeReq >= $dateTaken->dancetime && $endTimeReq <= $endTimeTkn){
-                return response()->json(['statusText' => "There is an appoinment within this hours, sorry"], 204);
+                return response()->json(['status' => 20, 'message' => "There is an appoinment within this hours, sorry"], 400);
             }
         }
 
         $appointment = Appointments::create($request->all());
-        return response()->json($appointment, 201);
+        return response()->json(['status' => 1], 201);
     }
 
     public function update($id, Request $request)

@@ -22,11 +22,11 @@
                     <v-alert :value="alertDate" type="warning" transition="scale-transition">
                          You must pick a date and a time for the dance.
                     </v-alert>
+                    <v-alert :value="alertWarning" type="warning" transition="scale-transition">
+                         {{ alertMessage }}
+                    </v-alert>
                     <v-alert :value="alertError" type="error" transition="scale-transition">
                          Sorry... there was an error with the comunication. Please try again.
-                    </v-alert>
-                    <v-alert :value="alertWarning" type="warning" transition="scale-transition">
-                         Sorry... This date/time has been taken, select another one.
                     </v-alert>
                </v-flex>
                <v-flex xs6>
@@ -81,7 +81,8 @@ export default {
                landscape: true,
                alertDate: false,
                alertError: false,
-               alertWarning: false
+               alertWarning: false,
+               alertMessage: "",
           }
      },
      methods:{
@@ -93,13 +94,15 @@ export default {
                          method: "POST",
                          headers: { "Content-Type":"application/json" }
                     })
+                    .then(data => data.json())
                     .then((data) => {
                          console.log(data);
-                         var self = this;
-                         if (data.status == 201){
-                              self.dialog = true;
-                         }else if(data.status == 204){
+                         if (data.status == 1){
+                              this.dialog = true;
+                         }else{
                               this.alertWarning = true;
+                              this.alertMessage = data.message;
+                              self = this;
                               setTimeout(function(){self.alertWarning=false}, 5000);
                          }
                     })
@@ -107,12 +110,12 @@ export default {
                          console.log(err);
                          this.alertError = true;
                          var self = this;
-                         setTimeout(function(){self.alertError=false}, 5000);
+                         setTimeout(function(){this.alertError=false}, 5000);
                     })
                }else{
                     this.alertDate = true;
                     var self = this;
-                    setTimeout(function(){self.alertDate=false}, 3000);
+                    setTimeout(function(){this.alertDate=false}, 3000);
                }
           },
           getTimeFormat : function (time){
