@@ -12,6 +12,15 @@
                               <p> Dance scheduled with <span class="dancer">{{ appointment.name }}</span> at 
                               <span class="time"> {{ getTimeFormat(appointment.dancetime) }} </span></p>
                          </v-card-text>
+                         <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn icon @click="$router.replace('create/'+appointment.id)">
+                                   <v-icon>edit</v-icon>
+                              </v-btn>
+                              <v-btn icon>
+                                   <v-icon>delete</v-icon>
+                              </v-btn>
+                         </v-card-actions>
                     </v-card>
                     <div v-if="appointments.length == 0">
                          <h1>Want a dance with the Death?</h1>

@@ -16,8 +16,11 @@
                          label="E-mail"
                          required
                     ></v-text-field>
-                    <v-btn :disabled="!valid" @click="submit">
+                    <v-btn :disabled="!valid" v-if="!editor" @click="submit">
                          Create Appointment
+                    </v-btn>
+                    <v-btn :disabled="!valid" v-if="editor" @click="submit('update')">
+                         Update Appointment
                     </v-btn>
                     <v-alert :value="alertDate" type="warning" transition="scale-transition">
                          You must pick a date and a time for the dance.
@@ -31,7 +34,7 @@
                </v-flex>
                <v-flex xs6>
                     <v-date-picker first-day-of-week="0" v-model="appointment.dancedate" :landscape="landscape" ></v-date-picker>
-                    <v-time-picker :allowed-hours="allowedHours" v-model="appointment.dancetime" :landscape="landscape"></v-time-picker>
+                    <v-time-picker min="09:00" max="17:59"  v-model="appointment.dancetime" :landscape="landscape"></v-time-picker>
                </v-flex>
           </v-layout>
      </v-form>
@@ -43,7 +46,7 @@
                </v-card-text>
                <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" flat="flat" @click="dialog = false" >
+                    <v-btn color="green darken-1" v-if="!editor" flat="flat" @click="dialog = false" >
                          Create Other
                     </v-btn>
                     <v-btn  color="green darken-1" flat="flat" @click="$router.replace('/')">
@@ -83,35 +86,31 @@ export default {
                alertError: false,
                alertWarning: false,
                alertMessage: "",
+               editor: false
+          }
+     },
+     props: [
+          'id'
+     ],
+     created(){
+          if(this.id){
+               fetch("http://api.belike.info/api/appointment/"+this.id, {method: "GET"})
+                    .then(data => data.json())
+                    .then((data) => {
+                         this.appointment = data;
+                         this.editor = true;
+                    })
+                    .catch(err => console.log(err));
           }
      },
      methods:{
           submit () {
                if ((this.$refs.form.validate()) && (this.appointment.dancedate && this.appointment.dancetime)){
-                    // console.log(this.appointment);
-                    fetch('http://api.belike.info/api/appointment', {
-                         body: JSON.stringify(this.appointment),
-                         method: "POST",
-                         headers: { "Content-Type":"application/json" }
-                    })
-                    .then(data => data.json())
-                    .then((data) => {
-                         console.log(data);
-                         if (data.status == 1){
-                              this.dialog = true;
-                         }else{
-                              this.alertWarning = true;
-                              this.alertMessage = data.message;
-                              self = this;
-                              setTimeout(function(){self.alertWarning=false}, 5000);
-                         }
-                    })
-                    .catch((err) => {
-                         console.log(err);
-                         this.alertError = true;
-                         var self = this;
-                         setTimeout(function(){this.alertError=false}, 5000);
-                    })
+                    if(!this.editor){
+                         this.fetchData("POST");
+                    }else{
+                         this.fetchData("PUT", this.id);
+                    }
                }else{
                     this.alertDate = true;
                     var self = this;
@@ -121,7 +120,31 @@ export default {
           getTimeFormat : function (time){
                return moment(time, "hh:mm:ss").format("hh:mm a");
           },
-          allowedHours: v => v > 8 || v < 6,
+          fetchData(method, id = ""){
+               fetch('http://api.belike.info/api/appointment/'+id, {
+                    body: JSON.stringify(this.appointment),
+                    method,
+                    headers: { "Content-Type":"application/json" }
+               })
+               .then(data => data.json())
+               .then((data) => {
+                    console.log(data);
+                    if (data.status == 1){
+                         this.dialog = true;
+                    }else{
+                         this.alertWarning = true;
+                         this.alertMessage = data.message;
+                         self = this;
+                         setTimeout(function(){self.alertWarning=false}, 5000);
+                    }
+               })
+               .catch((err) => {
+                    console.log(err);
+                    this.alertError = true;
+                    var self = this;
+                    setTimeout(function(){this.alertError=false}, 5000);
+               })
+          }
      }
 }
 </script>
