@@ -121,9 +121,11 @@ export default {
                return moment(time, "hh:mm:ss").format("hh:mm a");
           },
           fetchData(method, id = ""){
-               fetch('http://api.belike.info/api/appointment/'+id, {
+               var apiUrl = "http://api.belike.info/api/appointment" + ((id=="")?'':"/"+id);
+               console.log(apiUrl);
+               fetch(apiUrl, {
                     body: JSON.stringify(this.appointment),
-                    method,
+                    method: method,
                     headers: { "Content-Type":"application/json" }
                })
                .then(data => data.json())
