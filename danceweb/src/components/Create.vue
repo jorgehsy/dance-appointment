@@ -33,7 +33,7 @@
                     </v-alert>
                </v-flex>
                <v-flex xs6>
-                    <v-date-picker first-day-of-week="0" v-model="appointment.dancedate" :landscape="landscape" ></v-date-picker>
+                    <v-date-picker first-day-of-week="0" v-model="appointment.dancedate" :landscape="landscape" :allowed-dates="isWeekend"></v-date-picker>
                     <v-time-picker min="09:00" max="17:59"  v-model="appointment.dancetime" :landscape="landscape"></v-time-picker>
                </v-flex>
           </v-layout>
@@ -146,7 +146,8 @@ export default {
                     var self = this;
                     setTimeout(function(){this.alertError=false}, 5000);
                })
-          }
+          },
+          isWeekend: val => !((new Date(val.split('-')).getDay())%6==0)
      }
 }
 </script>

@@ -88,6 +88,7 @@ export default {
           getTimeFormat : function (time){
                return moment(time, "hh:mm:ss").format("hh:mm a");
           }
+          
      }
 }
 </script>

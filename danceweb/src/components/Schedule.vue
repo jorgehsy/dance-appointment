@@ -3,7 +3,7 @@
           <v-card>
                <v-layout row wrap>
                     <v-flex lg4 xs12>
-                         <v-date-picker v-model="picker" ></v-date-picker>
+                         <v-date-picker v-model="picker" :allowed-dates="isWeekend"></v-date-picker>
                     </v-flex>
                     <v-flex lg8 xs12 off>
                          <v-layout column >
@@ -42,42 +42,34 @@
                </v-layout>
           </v-card>
 
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
-      <v-card>
-        <v-card-title class="headline grey lighten-2" primary-title >
-               <span v-if="!edit">Create Appointment</span>
-               <span v-if="edit">Update Appointment</span>
-        </v-card-title>
-
-        <v-card-text v-if="schedule">
-               <v-form ref="create" v-model="valid" lazy-validation>
-                    <v-text-field v-model="name" :counter="30" required label="name" :rules="nameRules"></v-text-field>
-                    <v-text-field v-model="email" required label="email" :rules="emailRules"></v-text-field>
-                    <p>Creating appointment for dancing on <span>{{ picker }} at {{ dancetime }}.</span> </p>
-               </v-form>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn   color="primary"  flat  @click="dialog = false" >
-            CANCEL
-          </v-btn>
-          <v-btn color="green" @click="submit()"  >
-            <span v-if="edit">UPDATE</span><span v-else>CREATE</span>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-                   <v-dialog v-model="delDialog" max-width="290">
-                    <v-card>
-                    <v-card-title class="headline">Are you sure?</v-card-title>
-                    <v-card-text >
+          <v-dialog   v-model="dialog"  width="500"  persistent  >
+               <v-card>
+                    <v-card-title class="headline grey lighten-2" primary-title >
+                         <span v-if="!edit">Create Appointment</span>
+                         <span v-if="edit">Update Appointment</span>
+                    </v-card-title>
+                    <v-card-text v-if="schedule">
+                         <v-form ref="create" v-model="valid" lazy-validation>
+                              <v-text-field v-model="name" :counter="30" required label="name" :rules="nameRules"></v-text-field>
+                              <v-text-field v-model="email" required label="email" :rules="emailRules"></v-text-field>
+                              <p>Creating appointment for dancing on <span>{{ picker }} at {{ dancetime }}.</span> </p>
+                         </v-form>
                     </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                         <v-btn   color="primary"  flat  @click="clear();dialog = false;" >
+                              CANCEL
+                         </v-btn>
+                         <v-btn color="green" @click="submit()"  >
+                              <span v-if="edit">UPDATE</span><span v-else>CREATE</span>
+                         </v-btn>
+                    </v-card-actions>
+               </v-card>
+          </v-dialog>
+          <v-dialog v-model="delDialog" max-width="290">
+               <v-card>
+                    <v-card-title class="headline">Are you sure?</v-card-title>
                     <v-card-actions>
                          <v-spacer></v-spacer>
                          <v-btn flat color="primary" @click="delDialog = false"   >
@@ -87,22 +79,14 @@
                               DELETE
                          </v-btn>
                     </v-card-actions>
-                    </v-card>
-               </v-dialog>
-    <v-snackbar
-      v-model="snackbar"
-      :color="color"
-      :timeout="timeout"
-    >
-      {{ text }}
-      <v-btn
-        dark
-        flat
-        @click="snackbar = false"
-      >
-        Close
-      </v-btn>
-    </v-snackbar>
+               </v-card>
+          </v-dialog>
+          <v-snackbar v-model="snackbar"  :color="color"  :timeout="timeout"   >
+               {{ text }}
+               <v-btn  dark  flat  @click="snackbar = false"   >
+                    Close
+               </v-btn>
+          </v-snackbar>
      </v-container>
 </template>
 
@@ -121,12 +105,15 @@ export default {
                dancetime:"",
                dancedate: "",
                edit: false,
+               dialog: false,
+               valid: false,
                id: "",
                name: '',
                snackbar: false,
                color: '',
                timeout: 6000,
                text: 'snackbar',
+               schedule:["09:00:00","10:00:00","11:00:00","12:00:00","13:00:00","14:00:00","15:00:00","16:00:00"],
                nameRules: [
                v => !!v || 'Name is required',
                v => (v && v.length <= 30) || 'Name must be less than 10 characters'
@@ -135,10 +122,7 @@ export default {
                emailRules: [
                v => !!v || 'E-mail is required',
                v => /.+@.+/.test(v) || 'E-mail must be valid'
-               ],
-               dialog: false,
-               valid: false,
-               schedule:["09:00:00","10:00:00","11:00:00","12:00:00","13:00:00","14:00:00","15:00:00","16:00:00"]
+               ]
           }
      },
      watch:{
@@ -235,7 +219,14 @@ export default {
                     this.text = data.message,
                     this.snackbar = true;
                });
-          }
+          },
+          clear(){
+               this.edit = false;
+               this.id = "";
+               this.name = "";
+               this.email = "";
+          },
+          isWeekend: val => !((new Date(val.split('-')).getDay())%6==0)
      }
 }
 </script>
