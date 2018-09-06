@@ -16,8 +16,10 @@
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('appointments',  ['uses' => 'AppointmentsController@showAll']);
   
+    $router->get('appointments/{year}/{month}/{day}', ['uses' => 'AppointmentsController@showAppointmentsOnDate']);
+    
     $router->get('appointment/{id}', ['uses' => 'AppointmentsController@showAppointment']);
-  
+    
     $router->post('appointment', ['uses' => 'AppointmentsController@create']);
   
     $router->delete('appointment/{id}', ['uses' => 'AppointmentsController@delete']);

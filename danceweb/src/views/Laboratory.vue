@@ -1,19 +1,19 @@
 <template>
      <v-container >
-          <Schedule />
+          <Appointments />
      </v-container>
 </template>
 
 <script>
-import Schedule from "@/components/Schedule.vue";
-
+import Appointments from "@/components/Appointments.vue";
 export default {
-  name: "home",
-  components: {
-    Schedule
-  }
-};
+     name: "laboratory",
+     components: {
+          Appointments
+     }  
+}
 </script>
+
 
 <style scoped>
 h1, h2 {
@@ -31,3 +31,4 @@ a {
   color: #42b983;
 }
 </style>
+

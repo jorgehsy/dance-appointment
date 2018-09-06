@@ -16,6 +16,18 @@
                          </v-list-tile-action>
                          <v-list-tile-content>
                          <v-list-tile-title>Home</v-list-tile-title>
+                         <v-list-tile-title class="subtitle">for Asimovers</v-list-tile-title>
+                         </v-list-tile-content>
+                    </v-list-tile>
+                    
+        <v-divider></v-divider>
+                    <v-list-tile @click="$router.replace('/lab')">
+                         <v-list-tile-action>
+                         <v-icon>dashboard</v-icon>
+                         </v-list-tile-action>
+                         <v-list-tile-content>
+                         <v-list-tile-title>Playground</v-list-tile-title>
+                         <v-list-tile-title class="subtitle">Just for fun</v-list-tile-title>
                          </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="$router.replace('/create')">
@@ -24,6 +36,7 @@
                          </v-list-tile-action>
                          <v-list-tile-content>
                          <v-list-tile-title>Make Appointment</v-list-tile-title>
+                         <v-list-tile-title class="subtitle">Get a date!</v-list-tile-title>
                          </v-list-tile-content>
                     </v-list-tile>
                </v-list>
@@ -33,7 +46,15 @@
                     <router-view></router-view>
                </v-container>
           </v-content>
-          <v-footer app></v-footer>
+            <v-footer app dark height="auto">
+    <v-card class="flex" flat til >
+      <v-card-actions class="grey darken-3 justify-center">
+        <strong>Code Challenge for Asimov Consultores by Jorge Simoes</strong>
+        <v-spacer></v-spacer>
+        <a href="https://github.com/jorgehsy/dance-appointment"><v-icon small>code</v-icon>  view source code  </a>
+      </v-card-actions>
+    </v-card>
+  </v-footer>
      </v-app>
 </template>
 
@@ -47,3 +68,15 @@ export default {
      }
 };
 </script>
+<style>
+.subtitle{
+     font-size: 8pt;
+     color: gray;
+     font-weight: 400
+}
+a{
+     text-decoration: none;
+     color: white;
+}
+</style>
+
